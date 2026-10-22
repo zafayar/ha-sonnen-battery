@@ -76,7 +76,7 @@ class SonnenConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(unique_id)
                 self._abort_if_unique_id_configured(updates={CONF_HOST: host})
                 return self.async_create_entry(
-                    title="sonnenBatterie",
+                    title="Sonnen Battery",
                     data={CONF_HOST: host, CONF_API_TOKEN: user_input[CONF_API_TOKEN]},
                 )
         return self.async_show_form(step_id="user", data_schema=_user_schema(user_input or {}), errors=errors)

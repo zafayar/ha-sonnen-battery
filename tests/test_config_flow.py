@@ -26,7 +26,7 @@ async def test_user_flow(hass: HomeAssistant, mock_api: MagicMock) -> None:
         result["flow_id"], {CONF_HOST: "192.168.1.50", CONF_API_TOKEN: TOKEN}
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == "sonnenBatterie"
+    assert result["title"] == "Sonnen Battery"
     assert result["data"] == {CONF_HOST: HOST, CONF_API_TOKEN: TOKEN}
     assert result["result"].unique_id == SERIAL
 

@@ -1,9 +1,9 @@
-# sonnenBatterie (Local API) for Home Assistant
+# Sonnen Battery (Local API) for Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/)
 [![CI](https://github.com/zafayar/ha-sonnen-battery/actions/workflows/ci.yml/badge.svg)](https://github.com/zafayar/ha-sonnen-battery/actions/workflows/ci.yml)
 
-A Home Assistant integration for sonnenBatterie home batteries. It talks to the battery directly over your local network using sonnen's JSON API (v2), with no cloud account.
+A Home Assistant integration for Sonnen home batteries. It talks to the battery directly over your local network using sonnen's JSON API (v2), with no cloud account.
 
 **Works with the Energy dashboard out of the box.** The battery only reports live power (watts), but the Energy dashboard needs running energy totals (kWh). This integration turns the live readings into six kWh counters with the right device class, state class and unit, so you can pick them straight away: no Riemann sum helpers, no template sensors.
 
@@ -21,7 +21,7 @@ A Home Assistant integration for sonnenBatterie home batteries. It talks to the 
 
 ## Requirements
 
-- A sonnenBatterie with the JSON API v2 and an API token (most systems from software 1.8 onwards). Older systems that only offer the legacy APIs on ports 8080 or 7979 aren't supported.
+- A Sonnen Battery with the JSON API v2 and an API token (most systems from software 1.8 onwards). Older systems that only offer the legacy APIs on ports 8080 or 7979 aren't supported.
 - Home Assistant 2025.2 or later
 
 ### Get an API token
@@ -42,7 +42,7 @@ Or by hand:
 
 1. In HACS, open the menu (⋮) and choose **Custom repositories**.
 2. Add `https://github.com/zafayar/ha-sonnen-battery` with the category **Integration**.
-3. Find **sonnenBatterie (Local API)** in HACS and download it.
+3. Find **Sonnen Battery (Local API)** in HACS and download it.
 4. Restart Home Assistant.
 
 ### Manual
@@ -53,7 +53,7 @@ Copy `custom_components/sonnen_battery` into your Home Assistant `config/custom_
 
 [![Open your Home Assistant instance and start setting up the integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=sonnen_battery)
 
-**Settings → Devices & services → Add integration → sonnenBatterie (Local API)**, then enter the battery's IP address and the API token.
+**Settings → Devices & services → Add integration → Sonnen Battery (Local API)**, then enter the battery's IP address and the API token.
 
 To change how often it polls, open the integration and choose **Configure**. The default is 10 seconds. Shorter intervals make the energy counters more accurate.
 
@@ -63,15 +63,15 @@ Go to **Settings → Dashboards → Energy** and choose:
 
 | Energy dashboard setting     | Sensor                                       |
 | ---------------------------- | -------------------------------------------- |
-| Grid consumption             | `sensor.sonnenbatterie_grid_import_energy`   |
-| Return to grid               | `sensor.sonnenbatterie_grid_export_energy`   |
-| Solar production             | `sensor.sonnenbatterie_solar_production_energy` |
-| Battery: energy going in     | `sensor.sonnenbatterie_battery_charge_energy` |
-| Battery: energy coming out   | `sensor.sonnenbatterie_battery_discharge_energy` |
+| Grid consumption             | `sensor.sonnen_battery_grid_import_energy`   |
+| Return to grid               | `sensor.sonnen_battery_grid_export_energy`   |
+| Solar production             | `sensor.sonnen_battery_solar_production_energy` |
+| Battery: energy going in     | `sensor.sonnen_battery_battery_charge_energy` |
+| Battery: energy coming out   | `sensor.sonnen_battery_battery_discharge_energy` |
 
-`sensor.sonnenbatterie_house_consumption_energy` is there if you want to track the house's total as an individual device.
+`sensor.sonnen_battery_house_consumption_energy` is there if you want to track the house's total as an individual device.
 
-For the dashboard's live power view, use `sensor.sonnenbatterie_grid_power` (positive when importing) and `sensor.sonnenbatterie_battery_power` (positive when discharging). These follow Home Assistant's sign conventions.
+For the dashboard's live power view, use `sensor.sonnen_battery_grid_power` (positive when importing) and `sensor.sonnen_battery_battery_power` (positive when discharging). These follow Home Assistant's sign conventions.
 
 ### How the counters work
 

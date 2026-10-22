@@ -54,25 +54,25 @@ async def test_energy_dashboard_accepts_sensors(
             "energy_sources": [
                 {
                     "type": "grid",
-                    "stat_energy_from": "sensor.sonnenbatterie_grid_import_energy",
-                    "stat_energy_to": "sensor.sonnenbatterie_grid_export_energy",
-                    "stat_rate": "sensor.sonnenbatterie_grid_power",
+                    "stat_energy_from": "sensor.sonnen_battery_grid_import_energy",
+                    "stat_energy_to": "sensor.sonnen_battery_grid_export_energy",
+                    "stat_rate": "sensor.sonnen_battery_grid_power",
                     "cost_adjustment_day": 0,
                 },
                 {
                     "type": "solar",
-                    "stat_energy_from": "sensor.sonnenbatterie_solar_production_energy",
-                    "stat_rate": "sensor.sonnenbatterie_solar_production_power",
+                    "stat_energy_from": "sensor.sonnen_battery_solar_production_energy",
+                    "stat_rate": "sensor.sonnen_battery_solar_production_power",
                     "config_entry_solar_forecast": None,
                 },
                 {
                     "type": "battery",
-                    "stat_energy_from": "sensor.sonnenbatterie_battery_discharge_energy",
-                    "stat_energy_to": "sensor.sonnenbatterie_battery_charge_energy",
-                    "stat_rate": "sensor.sonnenbatterie_battery_power",
+                    "stat_energy_from": "sensor.sonnen_battery_battery_discharge_energy",
+                    "stat_energy_to": "sensor.sonnen_battery_battery_charge_energy",
+                    "stat_rate": "sensor.sonnen_battery_battery_power",
                 },
             ],
-            "device_consumption": [{"stat_consumption": "sensor.sonnenbatterie_house_consumption_energy"}],
+            "device_consumption": [{"stat_consumption": "sensor.sonnen_battery_house_consumption_energy"}],
         }
     )
 

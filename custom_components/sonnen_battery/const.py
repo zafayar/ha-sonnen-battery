@@ -1,4 +1,4 @@
-"""Constants for the sonnenBatterie integration."""
+"""Constants for the Sonnen Battery integration."""
 
 from __future__ import annotations
 

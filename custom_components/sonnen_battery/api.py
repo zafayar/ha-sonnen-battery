@@ -1,4 +1,4 @@
-"""Client for the sonnenBatterie local JSON API (v2, token based).
+"""Client for the Sonnen Battery local JSON API (v2, token based).
 
 No Home Assistant imports, so it can be tested on its own.
 """
@@ -28,7 +28,7 @@ class SonnenAuthError(SonnenError):
 
 
 class SonnenApi:
-    """Talks to one sonnenBatterie on the local network."""
+    """Talks to one Sonnen Battery on the local network."""
 
     def __init__(
         self,

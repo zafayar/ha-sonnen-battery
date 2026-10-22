@@ -1,4 +1,4 @@
-"""The sonnenBatterie integration (local JSON API v2)."""
+"""The Sonnen Battery integration (local JSON API v2)."""
 
 from __future__ import annotations
 

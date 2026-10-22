@@ -29,12 +29,12 @@ from pytest_homeassistant_custom_component.common import (
 from custom_components.sonnen_battery.api import SonnenConnectionError
 
 ENERGY_SENSORS = {
-    "grid_import": "sensor.sonnenbatterie_grid_import_energy",
-    "grid_export": "sensor.sonnenbatterie_grid_export_energy",
-    "battery_charge": "sensor.sonnenbatterie_battery_charge_energy",
-    "battery_discharge": "sensor.sonnenbatterie_battery_discharge_energy",
-    "solar_production": "sensor.sonnenbatterie_solar_production_energy",
-    "home_consumption": "sensor.sonnenbatterie_house_consumption_energy",
+    "grid_import": "sensor.sonnen_battery_grid_import_energy",
+    "grid_export": "sensor.sonnen_battery_grid_export_energy",
+    "battery_charge": "sensor.sonnen_battery_battery_charge_energy",
+    "battery_discharge": "sensor.sonnen_battery_battery_discharge_energy",
+    "solar_production": "sensor.sonnen_battery_solar_production_energy",
+    "home_consumption": "sensor.sonnen_battery_house_consumption_energy",
 }
 
 
@@ -58,14 +58,14 @@ def _value(hass: HomeAssistant, entity_id: str) -> float:
 
 async def test_power_sensors(hass: HomeAssistant, init_integration: MockConfigEntry) -> None:
     expected = {
-        "sensor.sonnenbatterie_house_consumption_power": "500.0",
-        "sensor.sonnenbatterie_solar_production_power": "3700.0",
-        "sensor.sonnenbatterie_grid_power": "-1200.0",  # HA convention: negative = export
-        "sensor.sonnenbatterie_grid_import_power": "0.0",
-        "sensor.sonnenbatterie_grid_export_power": "1200.0",
-        "sensor.sonnenbatterie_battery_power": "-2000.0",  # negative = charging
-        "sensor.sonnenbatterie_battery_charge_power": "2000.0",
-        "sensor.sonnenbatterie_battery_discharge_power": "0.0",
+        "sensor.sonnen_battery_house_consumption_power": "500.0",
+        "sensor.sonnen_battery_solar_production_power": "3700.0",
+        "sensor.sonnen_battery_grid_power": "-1200.0",  # HA convention: negative = export
+        "sensor.sonnen_battery_grid_import_power": "0.0",
+        "sensor.sonnen_battery_grid_export_power": "1200.0",
+        "sensor.sonnen_battery_battery_power": "-2000.0",  # negative = charging
+        "sensor.sonnen_battery_battery_charge_power": "2000.0",
+        "sensor.sonnen_battery_battery_discharge_power": "0.0",
     }
     for entity_id, value in expected.items():
         state = hass.states.get(entity_id)
@@ -77,14 +77,14 @@ async def test_power_sensors(hass: HomeAssistant, init_integration: MockConfigEn
 
 
 async def test_battery_sensors(hass: HomeAssistant, init_integration: MockConfigEntry) -> None:
-    assert hass.states.get("sensor.sonnenbatterie_state_of_charge").state == "55.0"
-    remaining = hass.states.get("sensor.sonnenbatterie_remaining_energy")
+    assert hass.states.get("sensor.sonnen_battery_state_of_charge").state == "55.0"
+    remaining = hass.states.get("sensor.sonnen_battery_remaining_energy")
     assert remaining.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfEnergy.KILO_WATT_HOUR
     assert float(remaining.state) == pytest.approx(5.8)
-    assert hass.states.get("sensor.sonnenbatterie_system_status").state == "OnGrid"
-    assert hass.states.get("sensor.sonnenbatterie_grid_frequency").state == "50.02"
-    assert hass.states.get("sensor.sonnenbatterie_cycle_count").state == "412.0"
-    assert hass.states.get("sensor.sonnenbatterie_state_of_health").state == "98.6"
+    assert hass.states.get("sensor.sonnen_battery_system_status").state == "OnGrid"
+    assert hass.states.get("sensor.sonnen_battery_grid_frequency").state == "50.02"
+    assert hass.states.get("sensor.sonnen_battery_cycle_count").state == "412.0"
+    assert hass.states.get("sensor.sonnen_battery_state_of_health").state == "98.6"
 
 
 async def test_energy_sensors_are_energy_dashboard_ready(
@@ -190,11 +190,11 @@ async def test_meter_sensors_disabled_by_default(
 
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_meter_sensor_values(hass: HomeAssistant, init_integration: MockConfigEntry) -> None:
-    imported = hass.states.get("sensor.sonnenbatterie_meter_production_1_energy_imported")
+    imported = hass.states.get("sensor.sonnen_battery_meter_production_1_energy_imported")
     assert float(imported.state) == pytest.approx(12345.6)
     assert imported.attributes[ATTR_STATE_CLASS] == SensorStateClass.TOTAL_INCREASING
     # A 0 reading is a meter that hasn't answered, not a reset.
-    assert hass.states.get("sensor.sonnenbatterie_meter_production_1_energy_exported").state == "unknown"
+    assert hass.states.get("sensor.sonnen_battery_meter_production_1_energy_exported").state == "unknown"
 
 
 async def test_unique_ids_use_serial(
@@ -215,10 +215,10 @@ async def test_latest_data_sensors(
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    assert hass.states.get("sensor.sonnenbatterie_status_light").state == "pulsing_white"
+    assert hass.states.get("sensor.sonnen_battery_status_light").state == "pulsing_white"
     # 7200 s before 12:00:30, to the minute.
-    assert hass.states.get("sensor.sonnenbatterie_last_full_charge").state == "2026-10-22T10:00:00+00:00"
-    capacity = hass.states.get("sensor.sonnenbatterie_full_charge_capacity")
+    assert hass.states.get("sensor.sonnen_battery_last_full_charge").state == "2026-10-22T10:00:00+00:00"
+    capacity = hass.states.get("sensor.sonnen_battery_full_charge_capacity")
     assert float(capacity.state) == pytest.approx(10.504)
     assert capacity.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfEnergy.KILO_WATT_HOUR
 
@@ -227,11 +227,11 @@ async def test_latest_data_sensors(
 async def test_shutdown_reason(
     hass: HomeAssistant, init_integration: MockConfigEntry, mock_api: MagicMock
 ) -> None:
-    assert hass.states.get("sensor.sonnenbatterie_shutdown_reason").state == "none"
+    assert hass.states.get("sensor.sonnen_battery_shutdown_reason").state == "none"
     mock_api.async_get_latest_data.return_value["ic_status"]["DC Shutdown Reason"]["HW_Shutdown"] = True
     await init_integration.runtime_data.async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.sonnenbatterie_shutdown_reason").state == "HW_Shutdown"
+    assert hass.states.get("sensor.sonnen_battery_shutdown_reason").state == "HW_Shutdown"
 
 
 async def test_no_latest_data_sensors_without_endpoint(
@@ -241,6 +241,6 @@ async def test_no_latest_data_sensors_without_endpoint(
     mock_config_entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.sonnenbatterie_status_light") is None
-    assert hass.states.get("sensor.sonnenbatterie_last_full_charge") is None
-    assert hass.states.get("binary_sensor.sonnenbatterie_problem") is None
+    assert hass.states.get("sensor.sonnen_battery_status_light") is None
+    assert hass.states.get("sensor.sonnen_battery_last_full_charge") is None
+    assert hass.states.get("binary_sensor.sonnen_battery_problem") is None

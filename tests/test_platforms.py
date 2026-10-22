@@ -20,16 +20,16 @@ from custom_components.sonnen_battery.api import SonnenConnectionError
 
 from .conftest import SERIAL, TOKEN
 
-SELECT = "select.sonnenbatterie_operating_mode"
-NUMBER = "number.sonnenbatterie_backup_reserve"
+SELECT = "select.sonnen_battery_operating_mode"
+NUMBER = "number.sonnen_battery_backup_reserve"
 
 
 async def test_binary_sensors(hass: HomeAssistant, init_integration: MockConfigEntry) -> None:
-    assert hass.states.get("binary_sensor.sonnenbatterie_charging").state == STATE_ON
-    assert hass.states.get("binary_sensor.sonnenbatterie_discharging").state == STATE_OFF
-    assert hass.states.get("binary_sensor.sonnenbatterie_on_grid").state == STATE_ON
-    assert hass.states.get("binary_sensor.sonnenbatterie_problem").state == STATE_OFF
-    assert hass.states.get("binary_sensor.sonnenbatterie_discharge_not_allowed").state == STATE_OFF
+    assert hass.states.get("binary_sensor.sonnen_battery_charging").state == STATE_ON
+    assert hass.states.get("binary_sensor.sonnen_battery_discharging").state == STATE_OFF
+    assert hass.states.get("binary_sensor.sonnen_battery_on_grid").state == STATE_ON
+    assert hass.states.get("binary_sensor.sonnen_battery_problem").state == STATE_OFF
+    assert hass.states.get("binary_sensor.sonnen_battery_discharge_not_allowed").state == STATE_OFF
 
 
 async def test_problem_on_red_light(
@@ -39,8 +39,8 @@ async def test_problem_on_red_light(
     led.update({"Pulsing White": False, "Solid Red": True})
     await init_integration.runtime_data.async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("binary_sensor.sonnenbatterie_problem").state == STATE_ON
-    assert hass.states.get("sensor.sonnenbatterie_status_light").state == "solid_red"
+    assert hass.states.get("binary_sensor.sonnen_battery_problem").state == STATE_ON
+    assert hass.states.get("sensor.sonnen_battery_status_light").state == "solid_red"
 
 
 async def test_operating_mode(

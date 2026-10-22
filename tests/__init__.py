@@ -1,1 +1,1 @@
-"""Tests for the sonnenBatterie integration."""
+"""Tests for the Sonnen Battery integration."""

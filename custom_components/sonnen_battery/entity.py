@@ -1,4 +1,4 @@
-"""Base entity for the sonnenBatterie integration."""
+"""Base entity for the Sonnen Battery integration."""
 
 from __future__ import annotations
 

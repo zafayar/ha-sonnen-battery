@@ -65,7 +65,7 @@ def mock_api() -> Generator[MagicMock]:
 def mock_config_entry() -> MockConfigEntry:
     return MockConfigEntry(
         domain=DOMAIN,
-        title="sonnenBatterie",
+        title="Sonnen Battery",
         unique_id=SERIAL,
         data={CONF_HOST: HOST, CONF_API_TOKEN: TOKEN},
     )

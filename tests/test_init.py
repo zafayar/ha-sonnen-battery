@@ -51,9 +51,9 @@ async def test_optional_endpoints_may_fail(
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
     assert mock_config_entry.state is ConfigEntryState.LOADED
-    assert hass.states.get("sensor.sonnenbatterie_state_of_charge").state == "55.0"
-    assert hass.states.get("select.sonnenbatterie_operating_mode") is None
-    assert hass.states.get("sensor.sonnenbatterie_cycle_count") is None
+    assert hass.states.get("sensor.sonnen_battery_state_of_charge").state == "55.0"
+    assert hass.states.get("select.sonnen_battery_operating_mode") is None
+    assert hass.states.get("sensor.sonnen_battery_cycle_count") is None
 
 
 async def test_failed_optional_endpoint_keeps_last_value(

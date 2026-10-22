@@ -68,8 +68,8 @@ class SonnenCoordinator(DataUpdateCoordinator[SonnenData]):
         return DeviceInfo(
             identifiers={(DOMAIN, self.serial)},
             manufacturer=MANUFACTURER,
-            model="sonnenBatterie",
-            name="sonnenBatterie",
+            model="Sonnen Battery",
+            name="Sonnen Battery",
             serial_number=self.config_entry.unique_id,
             configuration_url=self.api.base_url,
         )

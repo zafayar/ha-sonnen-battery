@@ -1,6 +1,6 @@
 {
   "domain": "sonnen_battery",
-  "name": "sonnenBatterie (Local API)",
+  "name": "Sonnen Battery (Local API)",
   "codeowners": [
     "@zafayar"
   ],
