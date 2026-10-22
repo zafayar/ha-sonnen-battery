@@ -11,7 +11,8 @@ A Home Assistant integration for sonnenBatterie home batteries. It talks to the 
 
 - Energy dashboard ready: grid import and export, battery charge and discharge, solar production and house consumption in kWh
 - Live power for every flow, with both signed and split (import/export, charge/discharge) sensors
-- State of charge, remaining energy, system status, grid frequency, cycle count and state of health
+- State of charge, remaining energy, system status, grid frequency, cycle count, state of health and full charge capacity
+- Problem alerts from the battery's status light and fault flags, plus the time of the last full charge
 - Change the operating mode and backup reserve (needs write access)
 - `sonnen_battery.set_power` action to charge or discharge at a fixed power from automations (manual mode)
 - Set up from the UI, with re-authentication, reconfiguration and a polling interval option
@@ -20,7 +21,7 @@ A Home Assistant integration for sonnenBatterie home batteries. It talks to the 
 
 ## Requirements
 
-- A sonnenBatterie with the JSON API (most systems from software 1.8 onwards)
+- A sonnenBatterie with the JSON API v2 and an API token (most systems from software 1.8 onwards). Older systems that only offer the legacy APIs on ports 8080 or 7979 aren't supported.
 - Home Assistant 2025.2 or later
 
 ### Get an API token
@@ -97,6 +98,12 @@ If your battery's own meters have lifetime counters, they are also available as 
 | Remaining energy | if your firmware reports it |
 | System status | e.g. `OnGrid`, `OffGrid` |
 | Charging / Discharging / On grid | binary sensors |
+| Problem | binary sensor: on when the status light is red or the battery reports a fault (BMS alarm, hardware shutdown, inverter over-temperature, electrolyte leakage) |
+| Discharge not allowed | binary sensor: sonnen's battery care is blocking discharge, diagnostic |
+| Status light | the light ring on the battery: pulsing white, green or orange, solid or blinking red, or off |
+| Last full charge | timestamp |
+| Shutdown reason | why the battery's DC side shut down, or `none`; disabled by default |
+| Full charge capacity | the battery's measured capacity, diagnostic |
 | Operating mode | select: Manual, Self-consumption, Time of use, Optimisation |
 | Backup reserve | number, % kept back for power cuts |
 | Grid frequency, AC voltage, battery voltage, cycle count, state of health | diagnostic |
@@ -118,6 +125,8 @@ data:
 A typical use is charging from the grid during a cheap tariff window: set the operating mode to Manual, call `set_power`, then switch back to Self-consumption afterwards.
 
 ## Troubleshooting
+
+- **Problem is on**: check the **Status light** and **Shutdown reason** sensors, then the battery's own dashboard. Contact your installer or sonnen for red-light faults.
 
 - **"The battery rejected the API token"**: check the token in **Software-Integration** and that the JSON API is turned on. If you generate a new token later, Home Assistant asks for it automatically.
 - **Operating mode or backup reserve missing**: the token can't read the battery's settings. Turn on the Read API.

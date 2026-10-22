@@ -1,0 +1,43 @@
+{
+  "Consumption_W": 500,
+  "FullChargeCapacity": 10504,
+  "GridFeedIn_W": 1200,
+  "Pac_total_W": -2000,
+  "Production_W": 3700,
+  "RSOC": 58,
+  "SetPoint_W": -2000,
+  "Timestamp": "2026-10-22 12:00:00",
+  "USOC": 55,
+  "UTC_Offet": 2,
+  "ic_status": {
+    "DC Shutdown Reason": {
+      "Critical BMS Alarm": false,
+      "Electrolyte Leakage": false,
+      "HW_Shutdown": false,
+      "Inverter Over Temperature": false,
+      "Manual shutdown by user": false,
+      "Minimum rSOC of System reached": false,
+      "Shutdown Timer started": false
+    },
+    "Eclipse Led": {
+      "Blinking Red": false,
+      "Brightness": 100,
+      "Pulsing Green": false,
+      "Pulsing Orange": false,
+      "Pulsing White": true,
+      "Solid Red": false
+    },
+    "MISC Status Bits": {
+      "Discharge not allowed": false,
+      "F1 open": false,
+      "Min System SOC": false,
+      "Min User SOC": false
+    },
+    "nrbatterymodules": 4,
+    "secondssincefullcharge": 7200,
+    "statebms": "ready",
+    "statecorecontrolmodule": "ongrid",
+    "stateinverter": "running",
+    "timestamp": "Thu Oct 22 12:00:00 2026"
+  }
+}

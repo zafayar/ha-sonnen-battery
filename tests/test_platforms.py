@@ -28,6 +28,19 @@ async def test_binary_sensors(hass: HomeAssistant, init_integration: MockConfigE
     assert hass.states.get("binary_sensor.sonnenbatterie_charging").state == STATE_ON
     assert hass.states.get("binary_sensor.sonnenbatterie_discharging").state == STATE_OFF
     assert hass.states.get("binary_sensor.sonnenbatterie_on_grid").state == STATE_ON
+    assert hass.states.get("binary_sensor.sonnenbatterie_problem").state == STATE_OFF
+    assert hass.states.get("binary_sensor.sonnenbatterie_discharge_not_allowed").state == STATE_OFF
+
+
+async def test_problem_on_red_light(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_api: MagicMock
+) -> None:
+    led = mock_api.async_get_latest_data.return_value["ic_status"]["Eclipse Led"]
+    led.update({"Pulsing White": False, "Solid Red": True})
+    await init_integration.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("binary_sensor.sonnenbatterie_problem").state == STATE_ON
+    assert hass.states.get("sensor.sonnenbatterie_status_light").state == "solid_red"
 
 
 async def test_operating_mode(

@@ -6,6 +6,7 @@ from collections.abc import Generator
 from unittest.mock import MagicMock, patch
 
 import pytest
+from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.sensor import (
     ATTR_STATE_CLASS,
     SensorDeviceClass,
@@ -201,3 +202,45 @@ async def test_unique_ids_use_serial(
 ) -> None:
     entry = entity_registry.async_get(ENERGY_SENSORS["grid_import"])
     assert entry.unique_id == "123456_grid_import_energy"
+
+
+async def test_latest_data_sensors(
+    hass: HomeAssistant,
+    freezer: FrozenDateTimeFactory,
+    mock_config_entry: MockConfigEntry,
+    mock_api: MagicMock,
+) -> None:
+    freezer.move_to("2026-10-22T12:00:30+00:00")
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert hass.states.get("sensor.sonnenbatterie_status_light").state == "pulsing_white"
+    # 7200 s before 12:00:30, to the minute.
+    assert hass.states.get("sensor.sonnenbatterie_last_full_charge").state == "2026-10-22T10:00:00+00:00"
+    capacity = hass.states.get("sensor.sonnenbatterie_full_charge_capacity")
+    assert float(capacity.state) == pytest.approx(10.504)
+    assert capacity.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfEnergy.KILO_WATT_HOUR
+
+
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
+async def test_shutdown_reason(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_api: MagicMock
+) -> None:
+    assert hass.states.get("sensor.sonnenbatterie_shutdown_reason").state == "none"
+    mock_api.async_get_latest_data.return_value["ic_status"]["DC Shutdown Reason"]["HW_Shutdown"] = True
+    await init_integration.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.sonnenbatterie_shutdown_reason").state == "HW_Shutdown"
+
+
+async def test_no_latest_data_sensors_without_endpoint(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: MagicMock
+) -> None:
+    mock_api.async_get_latest_data.side_effect = SonnenConnectionError("404")
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.sonnenbatterie_status_light") is None
+    assert hass.states.get("sensor.sonnenbatterie_last_full_charge") is None
+    assert hass.states.get("binary_sensor.sonnenbatterie_problem") is None

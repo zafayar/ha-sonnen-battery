@@ -33,7 +33,14 @@ class SonnenData:
     powermeter: list[dict[str, Any]] | None = None
     battery: dict[str, Any] | None = None
     configurations: dict[str, Any] | None = None
+    latest_data: dict[str, Any] | None = None
     errors: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def ic_status(self) -> dict[str, Any]:
+        """The status flags inside /latestdata, or {} if unavailable."""
+        ic_status = (self.latest_data or {}).get("ic_status")
+        return ic_status if isinstance(ic_status, dict) else {}
 
 
 class SonnenCoordinator(DataUpdateCoordinator[SonnenData]):
@@ -81,10 +88,12 @@ class SonnenCoordinator(DataUpdateCoordinator[SonnenData]):
             self.api.async_get_powermeter(),
             self.api.async_get_battery(),
             self.api.async_get_configurations(),
+            self.api.async_get_latest_data(),
             return_exceptions=True,
         )
         data = SonnenData(status=status, fetched_at=fetched_at)
-        for name, result in zip(("powermeter", "battery", "configurations"), results, strict=True):
+        names = ("powermeter", "battery", "configurations", "latest_data")
+        for name, result in zip(names, results, strict=True):
             if isinstance(result, SonnenError):
                 # Keep the last good value so one failed extra call doesn't
                 # flap entities to unavailable.

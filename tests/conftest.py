@@ -48,7 +48,7 @@ def mock_api() -> Generator[MagicMock]:
     api = MagicMock()
     api.base_url = HOST
     api.async_get_status = AsyncMock(return_value=deepcopy(load_fixture("status.json")))
-    api.async_get_latest_data = AsyncMock(return_value={})
+    api.async_get_latest_data = AsyncMock(return_value=deepcopy(load_fixture("latestdata.json")))
     api.async_get_powermeter = AsyncMock(return_value=deepcopy(load_fixture("powermeter.json")))
     api.async_get_battery = AsyncMock(return_value=deepcopy(load_fixture("battery.json")))
     api.async_get_configurations = AsyncMock(return_value=deepcopy(load_fixture("configurations.json")))

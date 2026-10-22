@@ -63,6 +63,12 @@
       },
       "on_grid": {
         "name": "On grid"
+      },
+      "problem": {
+        "name": "Problem"
+      },
+      "discharge_not_allowed": {
+        "name": "Discharge not allowed"
       }
     },
     "number": {
@@ -156,6 +162,26 @@
       },
       "meter_kwh_exported": {
         "name": "Meter {meter} {channel} energy exported"
+      },
+      "full_charge_capacity": {
+        "name": "Full charge capacity"
+      },
+      "status_led": {
+        "name": "Status light",
+        "state": {
+          "pulsing_white": "Pulsing white",
+          "pulsing_green": "Pulsing green",
+          "pulsing_orange": "Pulsing orange",
+          "solid_red": "Solid red",
+          "blinking_red": "Blinking red",
+          "off": "Off"
+        }
+      },
+      "shutdown_reason": {
+        "name": "Shutdown reason"
+      },
+      "last_full_charge": {
+        "name": "Last full charge"
       }
     }
   },

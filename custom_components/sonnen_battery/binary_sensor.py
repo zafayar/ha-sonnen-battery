@@ -1,4 +1,4 @@
-"""Binary sensors: charging, discharging and grid connection."""
+"""Binary sensors: charging, discharging, grid connection and problems."""
 
 from __future__ import annotations
 
@@ -10,11 +10,13 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import SonnenConfigEntry, SonnenCoordinator, SonnenData
 from .entity import SonnenEntity
+from .status_flags import has_problem
 
 PARALLEL_UPDATES = 0
 
@@ -22,6 +24,7 @@ PARALLEL_UPDATES = 0
 @dataclass(frozen=True, kw_only=True)
 class SonnenBinarySensorDescription(BinarySensorEntityDescription):
     value_fn: Callable[[SonnenData], bool | None]
+    exists_fn: Callable[[SonnenData], bool] = lambda _: True
 
 
 def _flag(key: str) -> Callable[[SonnenData], bool | None]:
@@ -55,6 +58,22 @@ BINARY_SENSORS: tuple[SonnenBinarySensorDescription, ...] = (
         device_class=BinarySensorDeviceClass.POWER,
         value_fn=_on_grid,
     ),
+    SonnenBinarySensorDescription(
+        key="problem",
+        translation_key="problem",
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: has_problem(data.ic_status),
+        exists_fn=lambda data: has_problem(data.ic_status) is not None,
+    ),
+    SonnenBinarySensorDescription(
+        # sonnen's "battery care": discharging is blocked, e.g. at very low charge.
+        key="discharge_not_allowed",
+        translation_key="discharge_not_allowed",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_flag("dischargeNotAllowed"),
+        exists_fn=lambda data: "dischargeNotAllowed" in data.status,
+    ),
 )
 
 
@@ -64,7 +83,9 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     coordinator = entry.runtime_data
-    async_add_entities(SonnenBinarySensor(coordinator, desc) for desc in BINARY_SENSORS)
+    async_add_entities(
+        SonnenBinarySensor(coordinator, desc) for desc in BINARY_SENSORS if desc.exists_fn(coordinator.data)
+    )
 
 
 class SonnenBinarySensor(SonnenEntity, BinarySensorEntity):

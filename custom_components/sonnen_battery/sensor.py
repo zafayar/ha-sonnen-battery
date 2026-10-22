@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -24,18 +25,28 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.typing import StateType
+from homeassistant.util import dt as dt_util
 
 from .coordinator import SonnenConfigEntry, SonnenCoordinator, SonnenData
 from .energy import FLOWS, EnergyIntegrator, split_flows, to_float
 from .entity import SonnenEntity
+from .status_flags import LED_OPTIONS, shutdown_reason, status_led
 
 PARALLEL_UPDATES = 0
 
 
 @dataclass(frozen=True, kw_only=True)
 class SonnenSensorDescription(SensorEntityDescription):
-    value_fn: Callable[[SonnenData], StateType]
+    value_fn: Callable[[SonnenData], StateType | datetime]
     exists_fn: Callable[[SonnenData], bool] = lambda _: True
+
+
+def _last_full_charge(data: SonnenData) -> datetime | None:
+    seconds = to_float(data.ic_status.get("secondssincefullcharge"))
+    if seconds is None or seconds < 0:
+        return None
+    # Whole minutes, so polling jitter doesn't write a new state every poll.
+    return (dt_util.utcnow() - timedelta(seconds=seconds)).replace(second=0, microsecond=0)
 
 
 def _status(key: str) -> Callable[[SonnenData], float | None]:
@@ -154,6 +165,43 @@ SENSORS: tuple[SonnenSensorDescription, ...] = (
         exists_fn=lambda data: data.battery is not None,
     ),
     SonnenSensorDescription(
+        key="full_charge_capacity",
+        translation_key="full_charge_capacity",
+        device_class=SensorDeviceClass.ENERGY_STORAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_battery("fullchargecapacitywh"),
+        exists_fn=lambda data: "fullchargecapacitywh" in (data.battery or {}),
+    ),
+    SonnenSensorDescription(
+        key="status_led",
+        translation_key="status_led",
+        device_class=SensorDeviceClass.ENUM,
+        options=LED_OPTIONS,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: status_led(data.ic_status),
+        exists_fn=lambda data: "Eclipse Led" in data.ic_status,
+    ),
+    SonnenSensorDescription(
+        key="shutdown_reason",
+        translation_key="shutdown_reason",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        value_fn=lambda data: shutdown_reason(data.ic_status),
+        exists_fn=lambda data: "DC Shutdown Reason" in data.ic_status,
+    ),
+    SonnenSensorDescription(
+        key="last_full_charge",
+        translation_key="last_full_charge",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_last_full_charge,
+        exists_fn=lambda data: "secondssincefullcharge" in data.ic_status,
+    ),
+    SonnenSensorDescription(
         key="state_of_health",
         translation_key="state_of_health",
         state_class=SensorStateClass.MEASUREMENT,
@@ -195,7 +243,7 @@ class SonnenSensor(SonnenEntity, SensorEntity):
         self.entity_description = description
 
     @property
-    def native_value(self) -> StateType:
+    def native_value(self) -> StateType | datetime:
         return self.entity_description.value_fn(self.coordinator.data)
 
 
