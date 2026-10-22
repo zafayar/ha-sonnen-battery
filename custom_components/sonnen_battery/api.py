@@ -47,14 +47,15 @@ class SonnenApi:
     def base_url(self) -> str:
         return self._base
 
-    async def _request(self, method: str, path: str, data: dict[str, str] | None = None) -> Any:
+    async def _request(self, method: str, path: str, body: dict[str, str] | None = None) -> Any:
         url = f"{self._base}/api/v2/{path}"
         try:
             async with self._session.request(
                 method,
                 url,
                 headers={AUTH_HEADER: self._token},
-                data=data,
+                # JSON, as sonnen's own Python library and ioBroker adapter send it.
+                json=body,
                 timeout=self._timeout,
             ) as resp:
                 if resp.status in (401, 403):
@@ -78,6 +79,7 @@ class SonnenApi:
         return _as_dict(await self._request("GET", "status"), "status")
 
     async def async_get_latest_data(self) -> dict[str, Any]:
+        """Status flags (ic_status): status LED, shutdown reason, last full charge."""
         return _as_dict(await self._request("GET", "latestdata"), "latestdata")
 
     async def async_get_powermeter(self) -> list[dict[str, Any]]:
@@ -93,7 +95,7 @@ class SonnenApi:
 
     async def async_set_configuration(self, key: str, value: str) -> dict[str, Any]:
         """Change one setting. Needs write access enabled for the token."""
-        reply = await self._request("PUT", "configurations", data={key: value})
+        reply = await self._request("PUT", "configurations", body={key: str(value)})
         return reply if isinstance(reply, dict) else {}
 
     async def async_set_power_setpoint(self, direction: str, watts: int) -> None:
@@ -127,4 +129,7 @@ def _index_key(key: str) -> tuple[int, str]:
 def _as_dict(reply: Any, path: str) -> dict[str, Any]:
     if not isinstance(reply, dict):
         raise SonnenConnectionError(f"{path}: unexpected reply")
+    if "ReturnCode" in reply:
+        # The battery reports some errors as HTTP 200 with only a return code.
+        raise SonnenConnectionError(f"{path}: battery returned code {reply['ReturnCode']}")
     return reply

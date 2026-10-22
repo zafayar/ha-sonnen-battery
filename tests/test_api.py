@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import aiohttp
 import pytest
 from homeassistant.core import HomeAssistant
@@ -71,6 +73,28 @@ async def test_set_configuration(api: SonnenApi, aioclient_mock: AiohttpClientMo
     _, _, data, headers = aioclient_mock.mock_calls[0]
     assert data == {"EM_USOC": "20"}
     assert headers["Auth-Token"] == TOKEN
+
+
+async def test_set_configuration_sends_json(api: SonnenApi, aioclient_mock: AiohttpClientMocker) -> None:
+    """A JSON body, as sonnen's own library sends it; not form data."""
+    aioclient_mock.put(f"{HOST}/api/v2/configurations", json={})
+    session = api._session
+    with patch.object(session, "request", wraps=session.request) as request:
+        await api.async_set_configuration("EM_OperatingMode", 2)
+    kwargs = request.call_args.kwargs
+    assert kwargs["json"] == {"EM_OperatingMode": "2"}
+    assert "data" not in kwargs
+
+
+async def test_return_code_reply_is_an_error(api: SonnenApi, aioclient_mock: AiohttpClientMocker) -> None:
+    aioclient_mock.get(f"{HOST}/api/v2/status", json={"ReturnCode": 503})
+    with pytest.raises(SonnenConnectionError, match="503"):
+        await api.async_get_status()
+
+
+async def test_latest_data(api: SonnenApi, aioclient_mock: AiohttpClientMocker) -> None:
+    aioclient_mock.get(f"{HOST}/api/v2/latestdata", json=load_fixture("latestdata.json"))
+    assert (await api.async_get_latest_data())["ic_status"]["secondssincefullcharge"] == 7200
 
 
 async def test_powermeter_dict_reply(api: SonnenApi, aioclient_mock: AiohttpClientMocker) -> None:
