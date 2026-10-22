@@ -18,6 +18,9 @@
         "description": "The battery at {host} rejected the API token. Enter the current token from its dashboard.",
         "data": {
           "api_token": "API token"
+        },
+        "data_description": {
+          "api_token": "The token shown under Software-Integration in the battery's dashboard"
         }
       },
       "reconfigure": {
@@ -25,6 +28,10 @@
         "data": {
           "host": "Host",
           "api_token": "API token"
+        },
+        "data_description": {
+          "host": "IP address or host name of the battery, e.g. 192.168.1.50",
+          "api_token": "The token shown under Software-Integration in the battery's dashboard"
         }
       }
     },
@@ -197,6 +204,12 @@
     },
     "entry_not_loaded": {
       "message": "That Sonnen Battery isn't loaded right now."
+    },
+    "auth_failed": {
+      "message": "The battery rejected the API token."
+    },
+    "update_failed": {
+      "message": "Couldn't read data from the battery: {error}"
     }
   },
   "selector": {

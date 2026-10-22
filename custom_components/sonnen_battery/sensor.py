@@ -68,7 +68,9 @@ def _grid_power(data: SonnenData) -> float | None:
     return None if feed_in is None else -feed_in
 
 
-def _power(key: str, value_fn, **kwargs: Any) -> SonnenSensorDescription:
+def _power(
+    key: str, value_fn: Callable[[SonnenData], float | None], **kwargs: Any
+) -> SonnenSensorDescription:
     return SonnenSensorDescription(
         key=key,
         translation_key=key,

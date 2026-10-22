@@ -19,10 +19,24 @@ A Home Assistant integration for Sonnen home batteries. It talks to the battery 
 - Diagnostics download with the token and serial number removed
 - No extra Python packages
 
+## What you can use it for
+
+- **Track your energy** in the Energy dashboard: what the house used, what the solar panels made, what went in and out of the battery and the grid.
+- **Get alerted to problems**: a notification when the battery's status light turns red or it reports a fault.
+- **Charge from the grid on a cheap tariff**: switch to manual mode and charge at a set power overnight, then switch back.
+- **Keep a reserve for power cuts**: raise the backup reserve before a storm, lower it again afterwards.
+- **Watch battery health over time**: cycle count, state of health and full charge capacity.
+
 ## Requirements
 
 - A Sonnen Battery with the JSON API v2 and an API token (most systems from software 1.8 onwards). Older systems that only offer the legacy APIs on ports 8080 or 7979 aren't supported.
 - Home Assistant 2025.2 or later
+
+### Supported devices
+
+Sonnen home batteries with the local JSON API v2, which most systems have from software version 1.8 onwards. The integration only uses that API, so the battery model matters less than the software version.
+
+No model has been confirmed yet. If it works with yours, please open an issue or a pull request so it can be listed here.
 
 ### Get an API token
 
@@ -56,6 +70,10 @@ Copy `custom_components/sonnen_battery` into your Home Assistant `config/custom_
 **Settings → Devices & services → Add integration → Sonnen Battery (Local API)**, then enter the battery's IP address and the API token.
 
 To change how often it polls, open the integration and choose **Configure**. The default is 10 seconds. Shorter intervals make the energy counters more accurate.
+
+### How data is updated
+
+The integration asks the battery for new readings every 10 seconds (change it under **Configure**). Each poll reads `/api/v2/status`; it also reads the meters, battery details, settings and status flags when the battery offers them. If one of those extra reads fails, the last good values are kept so entities don't flicker to unavailable. If the battery can't be reached at all, its entities show as unavailable until it answers again.
 
 ## Energy dashboard
 
@@ -124,6 +142,54 @@ data:
 
 A typical use is charging from the grid during a cheap tariff window: set the operating mode to Manual, call `set_power`, then switch back to Self-consumption afterwards.
 
+## Examples
+
+### Notify me when the battery reports a problem
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.sonnen_battery_problem
+    to: "on"
+    for: "00:05:00"
+actions:
+  - action: notify.notify
+    data:
+      title: Sonnen Battery
+      message: >-
+        The battery reports a problem. Status light:
+        {{ states('sensor.sonnen_battery_status_light') }}.
+```
+
+### Charge from the grid during a cheap tariff
+
+```yaml
+triggers:
+  - trigger: time
+    at: "01:00:00"
+actions:
+  - action: select.select_option
+    target:
+      entity_id: select.sonnen_battery_operating_mode
+    data:
+      option: manual
+  - action: sonnen_battery.set_power
+    data:
+      config_entry_id: <your battery>
+      direction: charge
+      power: 3000
+```
+
+Add a second automation at the end of the tariff window that selects `automatic` again.
+
+## Known limitations
+
+- **Legacy APIs aren't supported.** Older systems that only offer the APIs on ports 8080 or 7979 won't work.
+- **Energy counters miss time when Home Assistant is down.** They're built from live readings, so restarts and outages longer than 5 minutes aren't counted. Over a month this is usually a small difference, but it means the totals can read a little lower than your inverter or bill.
+- **One battery per entry.** Several batteries working together (a cascade) appear as separate devices, each with its own totals.
+- **Writing needs the Write API.** Without it, the operating mode, backup reserve and `set_power` are refused by the battery.
+- **The power setpoint only works in manual mode.** That's how the battery works, not a limit of this integration.
+
 ## Troubleshooting
 
 - **Problem is on**: check the **Status light** and **Shutdown reason** sensors, then the battery's own dashboard. Contact your installer or sonnen for red-light faults.
@@ -138,6 +204,14 @@ A typical use is charging from the grid during a cheap tariff window: set the op
     logs:
       custom_components.sonnen_battery: debug
   ```
+
+## Removing the integration
+
+1. **Settings → Devices & services → Sonnen Battery → ⋮ → Delete.**
+2. If you installed it with HACS, open HACS, find **Sonnen Battery (Local API)**, choose **⋮ → Remove**, and restart Home Assistant.
+3. Optionally turn off the JSON API in the battery's dashboard, under **Software-Integration**.
+
+Energy dashboard history for the removed sensors stays in Home Assistant until you delete it under **Developer tools → Statistics**.
 
 ## Development
 

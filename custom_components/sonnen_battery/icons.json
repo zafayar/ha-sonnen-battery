@@ -1,0 +1,70 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "discharging": {
+        "default": "mdi:battery-arrow-down-outline",
+        "state": { "on": "mdi:battery-arrow-down" }
+      },
+      "on_grid": {
+        "default": "mdi:transmission-tower-off",
+        "state": { "on": "mdi:transmission-tower" }
+      },
+      "discharge_not_allowed": {
+        "default": "mdi:battery-check",
+        "state": { "on": "mdi:battery-lock" }
+      }
+    },
+    "number": {
+      "backup_reserve": { "default": "mdi:battery-lock-open" }
+    },
+    "select": {
+      "operating_mode": {
+        "default": "mdi:state-machine",
+        "state": {
+          "manual": "mdi:hand-back-right",
+          "automatic": "mdi:home-battery",
+          "time_of_use": "mdi:clock-outline",
+          "optimisation": "mdi:chart-timeline-variant-shimmer"
+        }
+      }
+    },
+    "sensor": {
+      "consumption_power": { "default": "mdi:home-lightning-bolt" },
+      "production_power": { "default": "mdi:solar-power" },
+      "grid_power": { "default": "mdi:transmission-tower" },
+      "grid_import_power": { "default": "mdi:transmission-tower-import" },
+      "grid_export_power": { "default": "mdi:transmission-tower-export" },
+      "battery_power": { "default": "mdi:home-battery" },
+      "battery_charge_power": { "default": "mdi:battery-arrow-up" },
+      "battery_discharge_power": { "default": "mdi:battery-arrow-down" },
+      "grid_import_energy": { "default": "mdi:transmission-tower-import" },
+      "grid_export_energy": { "default": "mdi:transmission-tower-export" },
+      "battery_charge_energy": { "default": "mdi:battery-arrow-up" },
+      "battery_discharge_energy": { "default": "mdi:battery-arrow-down" },
+      "solar_production_energy": { "default": "mdi:solar-power" },
+      "home_consumption_energy": { "default": "mdi:home-lightning-bolt" },
+      "meter_kwh_imported": { "default": "mdi:meter-electric" },
+      "meter_kwh_exported": { "default": "mdi:meter-electric-outline" },
+      "system_status": { "default": "mdi:information-outline" },
+      "cycle_count": { "default": "mdi:battery-sync" },
+      "state_of_health": { "default": "mdi:battery-heart-variant" },
+      "full_charge_capacity": { "default": "mdi:battery-high" },
+      "last_full_charge": { "default": "mdi:battery-clock" },
+      "shutdown_reason": { "default": "mdi:power-plug-off" },
+      "status_led": {
+        "default": "mdi:led-on",
+        "state": {
+          "pulsing_white": "mdi:led-on",
+          "pulsing_green": "mdi:led-on",
+          "pulsing_orange": "mdi:alert-circle-outline",
+          "solid_red": "mdi:alert-circle",
+          "blinking_red": "mdi:alert-circle",
+          "off": "mdi:led-off"
+        }
+      }
+    }
+  },
+  "services": {
+    "set_power": { "service": "mdi:battery-sync" }
+  }
+}

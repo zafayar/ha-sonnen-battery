@@ -6,7 +6,6 @@ import logging
 from collections.abc import Mapping
 from typing import Any
 
-import voluptuous as vol
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -33,6 +32,7 @@ from .const import (
     MAX_SCAN_INTERVAL,
     MIN_SCAN_INTERVAL,
 )
+from .schema import vol
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -78,9 +78,13 @@ class SonnenCoordinator(DataUpdateCoordinator[SonnenData]):
         try:
             status = await self.api.async_get_status()
         except SonnenAuthError as err:
-            raise ConfigEntryAuthFailed(str(err)) from err
+            raise ConfigEntryAuthFailed(translation_domain=DOMAIN, translation_key="auth_failed") from err
         except SonnenError as err:
-            raise UpdateFailed(str(err)) from err
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="update_failed",
+                translation_placeholders={"error": str(err)},
+            ) from err
         fetched_at = time.monotonic()
 
         previous = self.data

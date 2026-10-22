@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import voluptuous as vol
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import ATTR_CONFIG_ENTRY_ID
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -12,6 +11,7 @@ from homeassistant.helpers import config_validation as cv
 from .api import SETPOINT_DIRECTIONS, SonnenError
 from .const import DOMAIN
 from .coordinator import SonnenConfigEntry
+from .schema import vol
 
 SERVICE_SET_POWER = "set_power"
 ATTR_DIRECTION = "direction"

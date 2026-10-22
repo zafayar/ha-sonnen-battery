@@ -5,7 +5,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from homeassistant.components.binary_sensor import (
+# BinarySensorDeviceClass is a re-export here; its newer home (binary_sensor.const)
+# may not exist on the oldest Home Assistant we support.
+from homeassistant.components.binary_sensor import (  # type: ignore[attr-defined]
     BinarySensorDeviceClass,
     BinarySensorEntity,
     BinarySensorEntityDescription,
