@@ -1,0 +1,11 @@
+{
+  "DE_Software": "1.18.3",
+  "DE_Ticket_Number": "123456",
+  "EM_OperatingMode": "2",
+  "EM_USOC": "10",
+  "EM_Prognosis_Charging": "0",
+  "IC_BatteryModules": "4",
+  "IC_InverterMaxPower_w": "4600",
+  "NVM_PfcIsFixedCosPhiActive": "0",
+  "SH_HeaterOperatingMode": "0"
+}

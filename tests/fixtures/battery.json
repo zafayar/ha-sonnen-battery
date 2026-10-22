@@ -1,0 +1,19 @@
+{
+  "balancechargerequest": 0,
+  "chargecurrentlimit": 39.97,
+  "cyclecount": 412,
+  "dischargecurrentlimit": 39.97,
+  "fullchargecapacity": 201.98,
+  "fullchargecapacitywh": 10504,
+  "maximumcelltemperature": 22.95,
+  "maximumcellvoltage": 3.29,
+  "minimumcelltemperature": 21.95,
+  "minimumcellvoltage": 3.28,
+  "relativestateofcharge": 58,
+  "remainingcapacity": 117.1,
+  "stateofhealth": 98.6,
+  "systemcurrent": -9.4,
+  "systemdcvoltage": 211.2,
+  "systemstatus": 49,
+  "usableremainingcapacity": 104.3
+}

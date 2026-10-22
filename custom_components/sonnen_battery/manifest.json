@@ -1,0 +1,12 @@
+{
+  "domain": "sonnen_battery",
+  "name": "sonnenBatterie (Local API)",
+  "codeowners": ["@zafayar"],
+  "config_flow": true,
+  "documentation": "https://github.com/zafayar/ha-sonnen-battery",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/zafayar/ha-sonnen-battery/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

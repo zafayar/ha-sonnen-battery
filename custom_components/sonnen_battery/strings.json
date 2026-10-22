@@ -1,0 +1,204 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect your sonnenBatterie",
+        "description": "Turn on the JSON API in the battery's dashboard (Software-Integration) and copy the API token. Enable write access too if you want to change the operating mode or backup reserve from Home Assistant.",
+        "data": {
+          "host": "Host",
+          "api_token": "API token"
+        },
+        "data_description": {
+          "host": "IP address or host name of the battery, e.g. 192.168.1.50",
+          "api_token": "The token shown under Software-Integration in the battery's dashboard"
+        }
+      },
+      "reauth_confirm": {
+        "title": "New API token",
+        "description": "The battery at {host} rejected the API token. Enter the current token from its dashboard.",
+        "data": {
+          "api_token": "API token"
+        }
+      },
+      "reconfigure": {
+        "title": "Change connection",
+        "data": {
+          "host": "Host",
+          "api_token": "API token"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Couldn't reach the battery. Check the host and that the JSON API is turned on.",
+      "invalid_auth": "The battery rejected the API token.",
+      "unknown": "Unexpected error. See the Home Assistant log."
+    },
+    "abort": {
+      "already_configured": "This battery is already set up.",
+      "reauth_successful": "Token updated.",
+      "reconfigure_successful": "Connection updated.",
+      "wrong_device": "That's a different battery from the one this entry is for."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Polling",
+        "data": {
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "scan_interval": "Seconds between readings. Shorter intervals make the energy counters more accurate."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "charging": {
+        "name": "Charging"
+      },
+      "discharging": {
+        "name": "Discharging"
+      },
+      "on_grid": {
+        "name": "On grid"
+      }
+    },
+    "number": {
+      "backup_reserve": {
+        "name": "Backup reserve"
+      }
+    },
+    "select": {
+      "operating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "manual": "Manual",
+          "automatic": "Self-consumption",
+          "time_of_use": "Time of use",
+          "optimisation": "Optimisation"
+        }
+      }
+    },
+    "sensor": {
+      "consumption_power": {
+        "name": "House consumption power"
+      },
+      "production_power": {
+        "name": "Solar production power"
+      },
+      "grid_power": {
+        "name": "Grid power"
+      },
+      "grid_import_power": {
+        "name": "Grid import power"
+      },
+      "grid_export_power": {
+        "name": "Grid export power"
+      },
+      "battery_power": {
+        "name": "Battery power"
+      },
+      "battery_charge_power": {
+        "name": "Battery charge power"
+      },
+      "battery_discharge_power": {
+        "name": "Battery discharge power"
+      },
+      "state_of_charge": {
+        "name": "State of charge"
+      },
+      "state_of_charge_real": {
+        "name": "State of charge (real)"
+      },
+      "remaining_energy": {
+        "name": "Remaining energy"
+      },
+      "system_status": {
+        "name": "System status"
+      },
+      "grid_frequency": {
+        "name": "Grid frequency"
+      },
+      "ac_voltage": {
+        "name": "AC voltage"
+      },
+      "battery_voltage": {
+        "name": "Battery voltage"
+      },
+      "cycle_count": {
+        "name": "Cycle count"
+      },
+      "state_of_health": {
+        "name": "State of health"
+      },
+      "grid_import_energy": {
+        "name": "Grid import energy"
+      },
+      "grid_export_energy": {
+        "name": "Grid export energy"
+      },
+      "battery_charge_energy": {
+        "name": "Battery charge energy"
+      },
+      "battery_discharge_energy": {
+        "name": "Battery discharge energy"
+      },
+      "solar_production_energy": {
+        "name": "Solar production energy"
+      },
+      "home_consumption_energy": {
+        "name": "House consumption energy"
+      },
+      "meter_kwh_imported": {
+        "name": "Meter {meter} {channel} energy imported"
+      },
+      "meter_kwh_exported": {
+        "name": "Meter {meter} {channel} energy exported"
+      }
+    }
+  },
+  "exceptions": {
+    "write_failed": {
+      "message": "The battery didn't accept the change. Check that write access is enabled for the API token."
+    },
+    "setpoint_failed": {
+      "message": "The battery didn't accept the power setpoint. It must be in manual operating mode, and write access must be enabled for the API token."
+    },
+    "entry_not_found": {
+      "message": "That sonnenBatterie isn't set up."
+    },
+    "entry_not_loaded": {
+      "message": "That sonnenBatterie isn't loaded right now."
+    }
+  },
+  "selector": {
+    "direction": {
+      "options": {
+        "charge": "Charge",
+        "discharge": "Discharge"
+      }
+    }
+  },
+  "services": {
+    "set_power": {
+      "name": "Set battery power",
+      "description": "Charges or discharges the battery at a fixed power. Only works in manual operating mode. Set 0 W to stop.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Battery",
+          "description": "The sonnenBatterie to control."
+        },
+        "direction": {
+          "name": "Direction",
+          "description": "Charge into the battery, or discharge out of it."
+        },
+        "power": {
+          "name": "Power",
+          "description": "Power in watts. The battery limits this to what its inverter can do."
+        }
+      }
+    }
+  }
+}

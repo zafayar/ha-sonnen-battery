@@ -1,0 +1,18 @@
+[
+  {
+    "a_l1": 5.1, "a_l2": 0, "a_l3": 0,
+    "channel": 1, "deviceid": 4, "direction": "production", "error": -1,
+    "kwh_exported": 0, "kwh_imported": 12345.6,
+    "v_l1_l2": 0, "v_l1_n": 237, "v_l2_l3": 0, "v_l2_n": 0, "v_l3_l1": 0, "v_l3_n": 0,
+    "va_total": 3710, "var_total": -120,
+    "w_l1": 3700, "w_l2": 0, "w_l3": 0, "w_total": 3700
+  },
+  {
+    "a_l1": 2.1, "a_l2": 0, "a_l3": 0,
+    "channel": 2, "deviceid": 4, "direction": "consumption", "error": -1,
+    "kwh_exported": 0, "kwh_imported": 9876.5,
+    "v_l1_l2": 0, "v_l1_n": 237, "v_l2_l3": 0, "v_l2_n": 0, "v_l3_l1": 0, "v_l3_n": 0,
+    "va_total": 510, "var_total": 40,
+    "w_l1": 500, "w_l2": 0, "w_l3": 0, "w_total": 500
+  }
+]

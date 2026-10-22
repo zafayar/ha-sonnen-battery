@@ -1,0 +1,26 @@
+set_power:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: sonnen_battery
+    direction:
+      required: true
+      example: charge
+      selector:
+        select:
+          translation_key: direction
+          options:
+            - charge
+            - discharge
+    power:
+      required: true
+      example: 1500
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 100
+          unit_of_measurement: W
+          mode: box

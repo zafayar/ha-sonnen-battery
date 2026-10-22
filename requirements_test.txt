@@ -1,0 +1,3 @@
+# Pulls in Home Assistant itself, pytest, pytest-asyncio and pytest-cov.
+pytest-homeassistant-custom-component
+ruff
