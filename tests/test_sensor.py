@@ -244,3 +244,26 @@ async def test_no_latest_data_sensors_without_endpoint(
     assert hass.states.get("sensor.sonnen_battery_status_light") is None
     assert hass.states.get("sensor.sonnen_battery_last_full_charge") is None
     assert hass.states.get("binary_sensor.sonnen_battery_problem") is None
+
+
+async def test_installed_capacity(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_api: MagicMock
+) -> None:
+    state = hass.states.get("sensor.sonnen_battery_installed_capacity")
+    assert float(state.state) == pytest.approx(10.0)  # 4 modules x 2500 Wh
+    assert state.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfEnergy.KILO_WATT_HOUR
+
+    mock_api.async_get_configurations.return_value["CM_MarketingModuleCapacity"] = "0"
+    await init_integration.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.sonnen_battery_installed_capacity").state == "unknown"
+
+
+async def test_no_installed_capacity_without_module_size(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: MagicMock
+) -> None:
+    del mock_api.async_get_configurations.return_value["CM_MarketingModuleCapacity"]
+    mock_config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    assert hass.states.get("sensor.sonnen_battery_installed_capacity") is None

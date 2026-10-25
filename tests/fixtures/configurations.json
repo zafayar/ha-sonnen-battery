@@ -7,5 +7,6 @@
   "IC_BatteryModules": "4",
   "IC_InverterMaxPower_w": "4600",
   "NVM_PfcIsFixedCosPhiActive": "0",
-  "SH_HeaterOperatingMode": "0"
+  "SH_HeaterOperatingMode": "0",
+  "CM_MarketingModuleCapacity": "2500"
 }

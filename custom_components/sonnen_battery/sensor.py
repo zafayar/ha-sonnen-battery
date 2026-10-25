@@ -27,6 +27,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.util import dt as dt_util
 
+from .const import CONF_KEY_MODULE_CAPACITY, CONF_KEY_MODULES
 from .coordinator import SonnenConfigEntry, SonnenCoordinator, SonnenData
 from .energy import FLOWS, EnergyIntegrator, split_flows, to_float
 from .entity import SonnenEntity
@@ -39,6 +40,16 @@ PARALLEL_UPDATES = 0
 class SonnenSensorDescription(SensorEntityDescription):
     value_fn: Callable[[SonnenData], StateType | datetime]
     exists_fn: Callable[[SonnenData], bool] = lambda _: True
+
+
+def _installed_capacity(data: SonnenData) -> float | None:
+    """Nominal capacity when new: module count x rated capacity per module (Wh)."""
+    config = data.configurations or {}
+    modules = to_float(config.get(CONF_KEY_MODULES))
+    per_module = to_float(config.get(CONF_KEY_MODULE_CAPACITY))
+    if not modules or not per_module or modules < 0 or per_module < 0:
+        return None
+    return modules * per_module
 
 
 def _last_full_charge(data: SonnenData) -> datetime | None:
@@ -165,6 +176,21 @@ SENSORS: tuple[SonnenSensorDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_battery("cyclecount"),
         exists_fn=lambda data: data.battery is not None,
+    ),
+    SonnenSensorDescription(
+        key="installed_capacity",
+        translation_key="installed_capacity",
+        device_class=SensorDeviceClass.ENERGY_STORAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        suggested_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=1,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_installed_capacity,
+        exists_fn=lambda data: (
+            CONF_KEY_MODULES in (data.configurations or {})
+            and CONF_KEY_MODULE_CAPACITY in (data.configurations or {})
+        ),
     ),
     SonnenSensorDescription(
         key="full_charge_capacity",

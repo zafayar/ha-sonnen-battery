@@ -189,6 +189,9 @@
       },
       "last_full_charge": {
         "name": "Last full charge"
+      },
+      "installed_capacity": {
+        "name": "Installed capacity"
       }
     }
   },

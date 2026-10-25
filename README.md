@@ -11,7 +11,7 @@ A Home Assistant integration for Sonnen home batteries. It talks to the battery 
 
 - Energy dashboard ready: grid import and export, battery charge and discharge, solar production and house consumption in kWh
 - Live power for every flow, with both signed and split (import/export, charge/discharge) sensors
-- State of charge, remaining energy, system status, grid frequency, cycle count, state of health and full charge capacity
+- State of charge, remaining energy, system status, grid frequency, cycle count, state of health, full charge capacity and installed capacity
 - Problem alerts from the battery's status light and fault flags, plus the time of the last full charge
 - Change the operating mode and backup reserve (needs write access)
 - `sonnen_battery.set_power` action to charge or discharge at a fixed power from automations (manual mode)
@@ -122,6 +122,7 @@ If your battery's own meters have lifetime counters, they are also available as 
 | Last full charge | timestamp |
 | Shutdown reason | why the battery's DC side shut down, or `none`; disabled by default |
 | Full charge capacity | the battery's measured capacity, diagnostic |
+| Installed capacity | nominal capacity when new (modules × rated module size), diagnostic; compare with full charge capacity to see ageing |
 | Operating mode | select: Manual, Self-consumption, Time of use, Optimisation |
 | Backup reserve | number, % kept back for power cuts |
 | Grid frequency, AC voltage, battery voltage, cycle count, state of health | diagnostic |

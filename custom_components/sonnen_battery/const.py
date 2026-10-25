@@ -15,6 +15,8 @@ MAX_SCAN_INTERVAL: Final = 300
 CONF_KEY_SERIAL: Final = "DE_Ticket_Number"
 CONF_KEY_OPERATING_MODE: Final = "EM_OperatingMode"
 CONF_KEY_BACKUP_RESERVE: Final = "EM_USOC"
+CONF_KEY_MODULES: Final = "IC_BatteryModules"
+CONF_KEY_MODULE_CAPACITY: Final = "CM_MarketingModuleCapacity"  # Wh per module
 
 # Operating modes the select offers: option -> value the battery uses.
 OPERATING_MODES: Final = {
